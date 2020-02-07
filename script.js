@@ -5,7 +5,8 @@ let isNumber = function(n) {
 };
 
 let isString = function(n) {
-  return Number(n);
+  //return /[а-яА-ЯеЁ\s,]/g.test(n);
+  return /^[a-zа-яё]+$/g.test(n);
 };
 
 let money;
@@ -37,16 +38,19 @@ let appData = {
   asking: function(){ 
 
     if(confirm('Есть ли у вас дополнительный источник заработка?')) {
-      let itemIncome,
-          cashIncome;
+      let itemIncome;
 
       do {
-        itemIncome = prompt('Какой у вас дополнительный заработок?', 'Таксую');
-      } while (isNumber(itemIncome));
+        itemIncome = prompt('Какой у вас дополнительный заработок?');
+      } while (!isString(itemIncome)); 
 
-      do {
-        cashIncome = prompt('Сколько в месяц зарабатываете на этом?', 10000);
-      } while (!isNumber(cashIncome));
+      let cashIncome = +prompt('Сколько в месяц зарабатываете на этом?', 10000);
+
+      while (!isNumber(cashIncome)) {
+        cashIncome = +prompt('Сколько в месяц зарабатываете на этом?', 10000);
+      }
+
+      appData.income[itemIncome] = cashIncome;
     }
 
     let addExpenses = prompt('“Перечислите возможные расходы за рассчитываемый период через запятую”'),
@@ -89,15 +93,18 @@ let appData = {
         }
             for (let i = 0; i < 2; i++) {
 
+              
+              let expenses,
+                  amount;
               do {
-                appData.expenses = prompt('“Введите обязательную статью расходов?”');
-              } while (isString(appData.expenses));
+                expenses = prompt('“Введите обязательную статью расходов?”');
+              } while (!isString(expenses));
 
               do {
-                appData.amount = prompt('“Во сколько это обойдется”');
-              } while (!isNumber(appData.amount));
+                amount = +prompt('“Во сколько это обойдется”');
+              } while (!isNumber(amount));
 
-              appData.expenses[appData.expenses] = appData.amount;
+              appData.expenses[expenses] = amount;
             }
           },
 
