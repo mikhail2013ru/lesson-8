@@ -4,6 +4,10 @@ let isNumber = function(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
+let isString = function(n) {
+  return Number(n);
+};
+
 let money;
 
 let start = function() {
@@ -33,40 +37,69 @@ let appData = {
   asking: function(){ 
 
     if(confirm('Есть ли у вас дополнительный источник заработка?')) {
+      let itemIncome,
+          cashIncome;
 
       do {
-        appData.itemIncome = prompt('Какой у вас дополнительный заработок?', 'Таксую');
-        appData.cashIncome = prompt('Сколько в месяц зарабатываете на этом?', 10000);
-        console.log('Дополнительный заработок есть!');
+        itemIncome = prompt('Какой у вас дополнительный заработок?', 'Таксую');
+      } while (isNumber(itemIncome));
 
-      } while (isNumber(appData.itemIncome) && (!isNumber(appData.cashIncome)) && appData.cashIncome !== null);
-    }    
+      do {
+        cashIncome = prompt('Сколько в месяц зарабатываете на этом?', 10000);
+      } while (!isNumber(cashIncome));
+    }
 
     let addExpenses = prompt('“Перечислите возможные расходы за рассчитываемый период через запятую”'),
         deposit = confirm('“Есть ли у вас депозит в банке?”');
 
-        let arrExpenses = addExpenses.map(function(n){
-          return n.toLowerCase().split(',');
+        //appData.addExpenses.push(addExpenses.split(','));
+
+        // let arrExpenses = appData.addExpenses.map(function(item){
+        //   //return item[0].toUpperCase() + item.slice(1).toLowerCase();
+        //   return item[0].toUpperCase() + item.slice(1).toLowerCase().toString();
+        // });
+
+        // console.log(arrExpenses);
+
+        appData.addExpenses = addExpenses.split(',');
+        let arrExpenses = appData.addExpenses.map(function(item){
+          return item[0].toUpperCase() + item.slice(1).toString().toLowerCase();
         });
 
         console.log(arrExpenses);
 
-        //appData.addExpenses.push(arrExpenses);
+        // let myArr = ['первый', 'второй'];
+
+        // myArr.map(item => {
+        //   console.log(item = item.toString().charAt(0).toUpperCase() + item.slice(1));
+        // });
+
+        //console.log(arrExpenses);
+
+        // let arrExpenses = addExpenses.map(function(n){
+        //   return n.toLowerCase().split(',');
+        // });
+
+        // console.log(arrExpenses);
+
+        //appData.addExpenses.push(arrExpenses);https://github.com/mikhail2013ru/lesson-8
 
         if (deposit) {
           appData.deposit = true;
         }
-
-          do {
-
             for (let i = 0; i < 2; i++) {
-              let expenses = prompt('“Введите обязательную статью расходов?”'),
-                  amount = +prompt('“Во сколько это обойдется?”');
-                  appData.expenses[expenses] = amount;
+
+              do {
+                appData.expenses = prompt('“Введите обязательную статью расходов?”');
+              } while (isString(appData.expenses));
+
+              do {
+                appData.amount = prompt('“Во сколько это обойдется”');
+              } while (!isNumber(appData.amount));
+
+              appData.expenses[appData.expenses] = appData.amount;
             }
-            
-          } while (isNumber(appData.amount) && !isNumber(appData.expenses) && appData.amount !== null && appData.expenses !== '');
-  },
+          },
 
   getExpensesMonth: function() {
     for (let key in appData.expenses) {
